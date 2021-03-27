@@ -1,0 +1,31 @@
+http:
+  routers:
+    hackernews:
+      entryPoints:
+        - "https"
+      rule: "Host(`hackernews.yourdomain.org`)"
+      middlewares:
+        - default-headers
+      tls:
+        {}
+      service: hackernews
+
+  services:
+    hackernews:
+      loadBalancer:
+        servers:
+          - url: "https://news.ycombinator.com"
+        passHostHeader: false
+
+  middlewares:
+
+    default-headers:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+
