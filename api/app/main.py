@@ -1,11 +1,16 @@
 from fastapi import FastAPI
-
+import yaml
+import json
 app = FastAPI()
 
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    with open(r'config.yml') as file:
+    # The FullLoader parameter handles the conversion from YAML
+    # scalar values to Python the dictionary format
+        config = yaml.load(file, Loader=yaml.FullLoader)
+    return {json.dumps(config)}
 
 
 @app.get("/items/{item_id}")
