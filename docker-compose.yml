@@ -37,6 +37,9 @@ services:
     build:
       context: ./api
     container_name: proximatic_fastapi
+    volumes:
+      - ./conf/config.yml:/app/config.yml
+
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
