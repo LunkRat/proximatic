@@ -19,6 +19,7 @@ services:
       - ./conf/traefik.yml:/traefik.yml:ro
       - ./data/acme.json:/acme.json
       - ./conf/config.yml:/config.yml:ro
+    command: "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=web"
@@ -36,6 +37,7 @@ services:
     build:
       context: ./api
     container_name: proximatic_fastapi
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.proximatic-api.entrypoints=websecure"
