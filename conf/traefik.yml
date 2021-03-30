@@ -26,16 +26,9 @@ entryPoints:
   websecure:
     address: :443
 
-################################################################
-# CertificatesResolvers configuration
-################################################################
-
-# ACME certificatesResolvers definition
-
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: youremail@yourdomain.org
       storage: acme.json
       httpChallenge:
         entryPoint: web
@@ -49,13 +42,13 @@ certificatesResolvers:
 #
 # Optional
 #
-#log:
+log:
   # Log level
   #
   # Optional
   # Default: "ERROR"
   #
-#  level: DEBUG
+  level: DEBUG
 
   # Sets the filepath for the traefik log. If not specified, stdout will be used.
   # Intermediate directories are created if necessary.
@@ -161,7 +154,7 @@ providers:
     # Default: true
     #
     exposedByDefault: false
-  
+
   # Enable File configuration provider
   file:
     filename: /config.yml

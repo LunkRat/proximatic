@@ -28,4 +28,3 @@ http:
         forceSTSHeader: true
         stsIncludeSubdomains: true
         stsPreload: true
-
