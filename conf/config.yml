@@ -1,20 +1,20 @@
 http:
   routers:
-    hackernews:
+    mysite:
       entryPoints:
         - "websecure"
-      rule: "Host(`hackernews.proximatic.link`)"
+      rule: "Host(`mysite.proximatic.link`)"
       middlewares:
         - default-headers
       tls:
         {}
-      service: hackernews
+      service: mysite
 
   services:
-    hackernews:
+    mysite:
       loadBalancer:
         servers:
-          - url: "https://news.ycombinator.com"
+          - url: "https://www.swanson.link/"
         passHostHeader: false
 
   middlewares:
