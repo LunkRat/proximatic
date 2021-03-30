@@ -12,6 +12,18 @@ def read_root():
         config = yaml.load(file, Loader=yaml.FullLoader)
     return {json.dumps(config)}
 
+@app.get("/domains/list")
+def get_domains():
+    yaml_file = 'config.yml'
+    with open(yaml_file, "r") as fh:
+        config = yaml.load(fh, Loader=yaml.SafeLoader)
+    response = {
+      'domains':{}
+    }
+    for service, values in config['http']['services'].items():
+        response['domains'][service] = values['loadBalancer']['servers'][0]['url']
+    return response
+
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str = None):
