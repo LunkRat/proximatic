@@ -23,14 +23,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=web"
       - "traefik.http.routers.traefik.rule=Host(`traefik.${PROXIMATIC_FQDN}`)"
-      # Protect Traefik Dashboard behind a basic http auth. The user/password string
-      # provided with this example file is:
-      # username: admin
-      # password: dashboard
-      # Please change this before you bring up your stack!
-      # Generate your own username and password for Traefik Dashboard using this command:
-      # echo $(htpasswd -nb <USER> <PASSWORD>) | sed -e s/\\$/\\$\\$/g
-      # Then paste the output in the label below as the value for traefik-auth.basicauth.users=
       - "traefik.http.middlewares.traefik-auth.basicauth.users=${PROXIMATIC_ADMIN_USER}"
       - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
@@ -40,18 +32,18 @@ services:
       - "traefik.http.routers.traefik-secure.tls=true"
       - "traefik.http.routers.traefik-secure.tls.certresolver=letsencrypt"
       - "traefik.http.routers.traefik-secure.service=api@internal"
-  backend:
+  api:
     build:
-      context: ./backend
+      context: ./api
     container_name: proximatic_fastapi
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.proximatic-backend.entrypoints=websecure"
-      - "traefik.http.routers.proximatic-backend.rule=Host(`api.${PROXIMATIC_FQDN}`)"
-      - "traefik.http.routers.proximatic-backend.tls=true"
-      - "traefik.http.routers.proximatic-backend.tls.certresolver=http"
-      - "traefik.http.middlewares.proximatic-backend-auth.basicauth.users=${PROXIMATIC_ADMIN_USER}"
-      - "traefik.http.routers.proximatic-backend.middlewares=proximatic-backend-auth"
+      - "traefik.http.routers.proximatic-api.entrypoints=websecure"
+      - "traefik.http.routers.proximatic-api.rule=Host(`api.${PROXIMATIC_FQDN}`)"
+      - "traefik.http.routers.proximatic-api.tls=true"
+      - "traefik.http.routers.proximatic-api.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.proximatic-api-auth.basicauth.users=${PROXIMATIC_ADMIN_USER}"
+      - "traefik.http.routers.proximatic-api.middlewares=proximatic-api-auth"
 
 networks:
   proxy:
