@@ -2,8 +2,8 @@ http:
   routers:
     hackernews:
       entryPoints:
-        - "https"
-      rule: "Host(`hackernews.yourdomain.org`)"
+        - "websecure"
+      rule: "Host(`hackernews.proximatic.link`)"
       middlewares:
         - default-headers
       tls:
