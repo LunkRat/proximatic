@@ -14,7 +14,7 @@ http:
     mysite:
       loadBalancer:
         servers:
-          - url: "https://www.swanson.link/"
+          - url: "https://news.ycombinator.com"
         passHostHeader: false
 
   middlewares:
