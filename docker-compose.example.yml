@@ -3,12 +3,13 @@ version: '3'
 services:
   traefik:
     image: traefik:v2.4
-    container_name: proximatic
+    container_name: proximatic_traefik
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
       - proxy
+      - default
     ports:
       - 80:80
       - 443:443
@@ -39,6 +40,18 @@ services:
       - "traefik.http.routers.traefik-secure.tls=true"
       - "traefik.http.routers.traefik-secure.tls.certresolver=http"
       - "traefik.http.routers.traefik-secure.service=api@internal"
+  backend:
+    build:
+      context: ./backend
+    container_name: proximatic_fastapi
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proximatic-backend.entrypoints=https"
+      - "traefik.http.routers.proximatic-backend.rule=Host(`api.yourdomain.org`)"
+      - "traefik.http.routers.proximatic-backend.tls=true"
+      - "traefik.http.routers.proximatic-backend.tls.certresolver=http"
+      - "traefik.http.middlewares.proximatic-backend-auth.basicauth.users=admin:$$apr1$$GdZhevxk$$snpVcRbSw4u2qmrtmFtea/"
+      - "traefik.http.routers.proximatic-backend.middlewares=proximatic-backend-auth"
 
 networks:
   proxy:

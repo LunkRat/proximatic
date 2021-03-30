@@ -37,32 +37,31 @@ It works. You can follow the instructions below to bring up Proximatic on any Do
 ## Installation
 
 1. Clone this repository into `/opt` and change your directory to `/opt/proximatic`
-2. Copy the example files to real files:
-
-```bash
-cp docker-compose.example.yml docker-compose.yml
-cp conf/traefik.example.yml conf/traefik.yml
-cp conf/config.example.yml conf/config.yml
-```
-
-3. Edit `docker-compose.yml`, replace all instances of `yourdomain.org` with your domain name, and set the username/password for the Traefik Dashboard basic auth
-4. Edit `conf/config.yml` and replace all instances of `yourdomain.org` with your domain name
-5. Edit `conf/traefik.yml` and replace `youremail@yourdomain.org` with your email (for LetsEncrypt certificate auto-renewal)
-6. Create the docker network used by Proximatic:
-
+2. Copy the `example.env` to `.env` and replace examples with real values.
+3. Create the external network needed for `docker-compose`
 ```bash
 docker network create proxy
 ```
-
-7. Bring up your Proximatic container with `docker-compose up -d`
+4. Bring up your Proximatic container with `docker-compose up -d`
 
 ## Usage
+
+### Using Proxied URLs
 
 The configuration file examples have a default domain set up to proxy the Hacker News website [https://news.ycombinator.com/](https://news.ycombinator.com/) through `hackernews.yourdomain.org`. 
 
 To use Hacker News through your Proximatic proxy, visit [https://hackernews.yourdomain.org](https://hackernews.yourdomain.org) in your browser.
 
 Your Proximatic instance provides a Traefik dashboard at `https:traefik.yourdomain.org` with the credentials you set in `docker-compose.yml`.
+
+### Rest API
+
+Json endpoint: [https://api.yourdomain.org](https://api.yourdomain.org)
+
+HTML API endpoints (interactive docs): 
+
+- [https://api.yourdomain.org/docs](https://api.yourdomain.org/docs)
+- [https://api.yourdomain.org/redoc](https://api.yourdomain.org/redoc)
 
 ## License
 
