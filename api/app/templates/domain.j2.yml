@@ -1,20 +1,20 @@
 http:
   routers:
-    mysite:
+    {{ subdomain }}:
       entryPoints:
         - "websecure"
-      rule: "Host(`mysite.proximatic.link`)"
+      rule: "Host(`{{ subdomain }}.{{ proximatic_fqdn }}`)"
       middlewares:
         - default-headers
       tls:
         {}
-      service: mysite
+      service: {{ subdomain }}
 
   services:
-    mysite:
+    {{ subdomain }}:
       loadBalancer:
         servers:
-          - url: "https://news.ycombinator.com"
+          - url: "{{ url }}"
         passHostHeader: false
 
   middlewares:

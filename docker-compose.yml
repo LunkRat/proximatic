@@ -16,9 +16,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./conf/traefik.yml:/traefik.yml:ro
-      - ./data/acme.json:/acme.json
-      - ./conf/config.yml:/config.yml:ro
+      - ./traefik.yml:/traefik.yml:ro
+      - ./data/traefik/acme.json:/data/traefik/acme.json
+      - ./data/traefik/conf:/data/traefik/conf:ro
     command: "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
     labels:
       - "traefik.enable=true"
@@ -38,8 +38,9 @@ services:
       context: ./api
     container_name: proximatic_fastapi
     volumes:
-      - ./conf/config.yml:/app/config.yml
-
+      - ./data/traefik/conf:/data/traefik/conf
+    environment:
+      - PROXIMATIC_FQDN
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
