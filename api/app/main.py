@@ -16,7 +16,7 @@ class DomainDelete(BaseModel):
 
 app = FastAPI()
 
-proximatic = Proximatic(proximatic_fqdn = os.genenv('PROXIMATIC_FQDN')
+proximatic = Proximatic(proximatic_fqdn = os.genenv('PROXIMATIC_FQDN'))
 
 @app.get("/")
 def read_root():
