@@ -25,8 +25,8 @@ def read_root():
     return {'Proximatic':'API'}
 
 
-@app.get("/domains/list")
-def get_domains():
+@app.get("/domain/list")
+def domain_list():
     """Endpoint that returns a list of configured domains."""
 
     response = proximatic.domains_list()
@@ -34,7 +34,7 @@ def get_domains():
     return response
 
 
-@app.post("/domains/update", status_code=status.HTTP_201_CREATED)
+@app.post("/domain/update", status_code=status.HTTP_201_CREATED)
 async def domain_update(item: DomainUpdate):
     """Endpoint that creates or replaces a domain configuration .yml file."""
 
@@ -43,7 +43,7 @@ async def domain_update(item: DomainUpdate):
     return response
 
 
-@app.post("/domains/delete")
+@app.post("/domain/delete")
 async def domain_delete(item: DomainDelete):
     """Endpoint that deletes a domain configuration .yml file."""
 
