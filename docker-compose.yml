@@ -34,9 +34,8 @@ services:
       - "traefik.http.routers.traefik-secure.tls.certresolver=letsencrypt"
       - "traefik.http.routers.traefik-secure.service=api@internal"
   api:
-    build:
-      context: ./api
-    container_name: proximatic_fastapi
+    build: ./
+    container_name: proximatic_api
     volumes:
       - ./data/traefik/conf:/data/traefik/conf
     environment:
