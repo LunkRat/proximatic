@@ -17,7 +17,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yml:/traefik.yml:ro
-      - ./private/acme.json:/etc/ssl/private/acme.json
+      - ./private/acme.json:/acme.json
       - ./data:/proximatic:ro
     labels:
       - "traefik.enable=true"
