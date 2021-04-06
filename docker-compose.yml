@@ -7,18 +7,54 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.web-secure.address=:443
+      - --log.level=${LOG_LEVEL}
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --providers.file.directory=/proximatic/yml
+      - --providers.file.watch=true
+      - --api
+      # Log config
+      - --log.filePath=/logs/traefik.log
+      - --log.format=${LOG_FORMAT:-common}
+      # Access logs
+      - --accesslog=${ACCESSLOG:-true}
+      - --accesslog.filepath=/logs/access.log
+      - --accesslog.bufferingsize=${ACCESSLOG_BUFFERINGSIZE:-100}
+      # Access log specific fields
+      - --accesslog.fields.defaultmode=${ACCESSLOG_FIELDS_DEFAULTMODE:-keep}
+      - --accesslog.fields.names.ClientUsername=${ACCESSLOG_FIELDS_NAMES_CLIENTUSERNAME:-keep}
+      - --accesslog.fields.headers.defaultmode=${ACCESSLOG_FIELDS_HEADERS_DEFAULTMODE:-keep}
+      - --accesslog.fields.headers.names.User-Agent=${ACCESSLOG_FIELDS_HEADERS_NAMES_USER_AGENT:-keep}
+      - --accesslog.fields.headers.names.Authorization=${ACCESSLOG_FIELDS_HEADERS_NAMES_AUTHORIZATION:-keep}
+      - --accesslog.fields.headers.names.Content-Type=${ACCESSLOG_FIELDS_HEADERS_NAMES_CONTENT_TYPE:-keep}
+
+      # cert resolvers
+      - --certificatesresolvers.letsencrypt.acme.caserver=${ACME_CA_SERVER}
+      - --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
+      - --certificatesResolvers.letsencrypt.acme.tlsChallenge=${ACME_TLS_CHALLENGE}
+      - --certificatesResolvers.letsencrypt.acme.dnsChallenge=${ACME_DNS_CHALLENGE}
+      - --certificatesResolvers.letsencrypt.acme.dnsChallenge.provider=${ACME_DNS_PROVIDER}
+      - --certificatesResolvers.letsencrypt.acme.dnsChallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+    environment:
+      - ${ACME_DNS_PROVIDER_ENV_FILE}=/provider.key
+    volumes:
+      - "${CERT_PATH}:/certs"
+      - "${ACME_STORE_PATH}:/acme.json"
+      - "${ACME_DNS_PROVIDER_ENV_FILE_VALUE}:/provider.key:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "${PROXIMATIC_YML_PATH:-./data/yml}:/proximatic/yml:ro"
+      - "${LOG_PATH:-./data/logs}:/logs"
+
     networks:
       - proxy
       - default
     ports:
       - 80:80
       - 443:443
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yml:/traefik.yml:ro
-      - ./private/acme.json:/acme.json
-      - ./data:/proximatic:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=web"
@@ -26,7 +62,7 @@ services:
       - "traefik.http.middlewares.traefik-auth.basicauth.users=${PROXIMATIC_ADMIN_USER}"
       - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
-      - "traefik.http.routers.traefik-secure.entrypoints=websecure"
+      - "traefik.http.routers.traefik-secure.entrypoints=web-secure"
       - "traefik.http.routers.traefik-secure.rule=Host(`traefik.${PROXIMATIC_FQDN}`)"
       - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
       - "traefik.http.routers.traefik-secure.tls=true"
@@ -36,14 +72,14 @@ services:
     build: ./
     container_name: proximatic_api
     volumes:
-      - ./data:/proximatic
+      - "${PROXIMATIC_YML_PATH:-./data/yml}:/proximatic/yml"
     environment:
       - PROXIMATIC_FQDN
-      - PROXIMATIC_YML_PATH
+      - PROXIMATIC_YML_PATH=/proximatic/yml
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.proximatic-api.entrypoints=websecure"
+      - "traefik.http.routers.proximatic-api.entrypoints=web-secure"
       - "traefik.http.routers.proximatic-api.rule=Host(`api.${PROXIMATIC_FQDN}`)"
       - "traefik.http.routers.proximatic-api.tls=true"
       - "traefik.http.routers.proximatic-api.tls.certresolver=letsencrypt"
