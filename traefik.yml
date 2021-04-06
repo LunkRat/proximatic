@@ -29,7 +29,7 @@ entryPoints:
 certificatesResolvers:
   letsencrypt:
     acme:
-      storage: /data/traefik/acme.json
+      storage: /traefik/acme.json
       httpChallenge:
         entryPoint: web
 
@@ -157,19 +157,5 @@ providers:
 
   # Enable File configuration provider
   file:
-    directory: /data/traefik/conf
+    directory: /proximatic
     watch: true
-
-http:
-  middlewares:
-
-    default-headers:
-      headers:
-        frameDeny: true
-        sslRedirect: true
-        browserXssFilter: true
-        contentTypeNosniff: true
-        forceSTSHeader: true
-        stsIncludeSubdomains: true
-        stsPreload: true
-

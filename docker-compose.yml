@@ -17,8 +17,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yml:/traefik.yml:ro
-      - ./data/traefik/acme.json:/data/traefik/acme.json
-      - ./data/traefik/conf:/data/traefik/conf:ro
+      - ./traefik/acme.json:/data/traefik/acme.json
+      - ./data:/proximatic:ro
     command: "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
     labels:
       - "traefik.enable=true"
@@ -37,9 +37,10 @@ services:
     build: ./
     container_name: proximatic_api
     volumes:
-      - ./data/traefik/conf:/data/traefik/conf
+      - ./data:/proximatic
     environment:
       - PROXIMATIC_FQDN
+      - PROXIMATIC_YML_PATH
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
