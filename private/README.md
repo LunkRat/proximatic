@@ -1,6 +1,6 @@
-# Proximatic Data Directory
+# SSL certificate directory
 
-Proximatic looks for `acme.json` in this directory. Traefik will store all of your Letsencrypt-issued SSL certificates and their private keys in `acme.json`.
+Traefik looks for `acme.json` in this directory. Traefik will store all of your Letsencrypt-issued SSL certificates and their private keys inside of `acme.json`.
 
 You just need a blank file to start. Make sure to restrict file permissions.
 

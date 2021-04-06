@@ -29,7 +29,7 @@ entryPoints:
 certificatesResolvers:
   letsencrypt:
     acme:
-      storage: /traefik/acme.json
+      storage: /etc/ssl/private/acme.json
       httpChallenge:
         entryPoint: web
 
