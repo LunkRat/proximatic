@@ -52,7 +52,7 @@ The configuration file examples have a default domain set up to proxy an example
 
 To use example.org through your Proximatic proxy, visit `https://example.PROXIMATIC_FQDN` in your browser.
 
-Your Proximatic instance provides a Traefik dashboard at `https:traefik.PROXIMATIC_FQDN` with the credentials you set in `.env`.
+Your Proximatic instance provides a Traefik dashboard at `https://traefik.PROXIMATIC_FQDN` with the credentials you set in `.env`.
 
 ### Rest API
 
