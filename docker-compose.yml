@@ -19,7 +19,6 @@ services:
       - ./traefik.yml:/traefik.yml:ro
       - ./private/acme.json:/etc/ssl/private/acme.json
       - ./data:/proximatic:ro
-    command: "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=web"

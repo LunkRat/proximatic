@@ -32,12 +32,12 @@ It works. You can follow the instructions below to bring up Proximatic on any Do
 
 - Docker engine running on a publicly accessible server
 - docker-compose
-- A domain with a wildcard DNS for `*.yourdomain.org` or individual `AAA` records for each domain that you want to proxy.
+- A domain with a wildcard DNS for `*.PROXIMATIC_FQDN` or individual `AAA` records for each domain that you want to proxy.
 
 ## Installation
 
 1. Clone this repository into `/opt` and change your directory to `/opt/proximatic`
-2. Copy the `example.env` to `.env` and replace examples with real values.
+2. Copy the `example.env` to `.env` and replace example values with real values.
 3. Create the external network needed for `docker-compose`
 ```bash
 docker network create proxy
@@ -48,20 +48,20 @@ docker network create proxy
 
 ### Using Proxied URLs
 
-The configuration file examples have a default domain set up to proxy the Hacker News website [https://news.ycombinator.com/](https://news.ycombinator.com/) through `hackernews.yourdomain.org`. 
+The configuration file examples have a default domain set up to proxy an example website [https://www.example.org/](https://www.example.org/) through `https://example.PROXIMATIC_FQDN`.
 
-To use Hacker News through your Proximatic proxy, visit [https://hackernews.yourdomain.org](https://hackernews.yourdomain.org) in your browser.
+To use example.org through your Proximatic proxy, visit `https://example.PROXIMATIC_FQDN` in your browser.
 
-Your Proximatic instance provides a Traefik dashboard at `https:traefik.yourdomain.org` with the credentials you set in `docker-compose.yml`.
+Your Proximatic instance provides a Traefik dashboard at `https:traefik.PROXIMATIC_FQDN` with the credentials you set in `.env`.
 
 ### Rest API
 
-Json endpoint: [https://api.yourdomain.org](https://api.yourdomain.org)
+Json endpoint: `https://api.PROXIMATIC_FQDN/`
 
 HTML API endpoints (interactive docs): 
 
-- [https://api.yourdomain.org/docs](https://api.yourdomain.org/docs)
-- [https://api.yourdomain.org/redoc](https://api.yourdomain.org/redoc)
+- `https://api.PROXIMATIC_FQDN/docs`
+- `https://api.PROXIMATIC_FQDN/redoc`
 
 ## License
 
