@@ -7,38 +7,42 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    # Our proximatic_traefik container gets its static configuration from these command arguments
     command:
-      - --entrypoints.web.address=:80
-      - --entrypoints.web-secure.address=:443
-      - --log.level=${LOG_LEVEL}
-      - --providers.docker
-      - --providers.docker.exposedbydefault=false
-      - --providers.file.directory=/proximatic/yml
-      - --providers.file.watch=true
-      - --api
-      # Log config
-      - --log.filePath=/logs/traefik.log
-      - --log.format=${LOG_FORMAT:-common}
-      # Access logs
-      - --accesslog=${ACCESSLOG:-true}
-      - --accesslog.filepath=/logs/access.log
-      - --accesslog.bufferingsize=${ACCESSLOG_BUFFERINGSIZE:-100}
-      # Access log specific fields
-      - --accesslog.fields.defaultmode=${ACCESSLOG_FIELDS_DEFAULTMODE:-keep}
-      - --accesslog.fields.names.ClientUsername=${ACCESSLOG_FIELDS_NAMES_CLIENTUSERNAME:-keep}
-      - --accesslog.fields.headers.defaultmode=${ACCESSLOG_FIELDS_HEADERS_DEFAULTMODE:-keep}
-      - --accesslog.fields.headers.names.User-Agent=${ACCESSLOG_FIELDS_HEADERS_NAMES_USER_AGENT:-keep}
-      - --accesslog.fields.headers.names.Authorization=${ACCESSLOG_FIELDS_HEADERS_NAMES_AUTHORIZATION:-keep}
-      - --accesslog.fields.headers.names.Content-Type=${ACCESSLOG_FIELDS_HEADERS_NAMES_CONTENT_TYPE:-keep}
-
-      # cert resolvers
-      - --certificatesresolvers.letsencrypt.acme.caserver=${ACME_CA_SERVER}
-      - --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
-      - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
-      - --certificatesResolvers.letsencrypt.acme.tlsChallenge=${ACME_TLS_CHALLENGE}
-      - --certificatesResolvers.letsencrypt.acme.dnsChallenge=${ACME_DNS_CHALLENGE}
-      - --certificatesResolvers.letsencrypt.acme.dnsChallenge.provider=${ACME_DNS_PROVIDER}
-      - --certificatesResolvers.letsencrypt.acme.dnsChallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+      # Enable Traefik Dashboard
+      - "--api"
+      # EntryPoints are ports that Traefik listens on
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web-secure.address=:443"
+      # Docker provider auto-discovers config from labels on other containers
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      # Proximatic (file) provider
+      - "--providers.file.directory=/proximatic/yml"
+      - "--providers.file.watch=true"
+      # Traefik application log config
+      - "--log.filePath=/logs/traefik.log"
+      - "--log.format=${LOG_FORMAT:-common}"
+      - "--log.level=${LOG_LEVEL}"
+      # Traefik access log config
+      - "--accesslog=${ACCESSLOG:-true}"
+      - "--accesslog.filepath=/logs/access.log"
+      - "--accesslog.bufferingsize=${ACCESSLOG_BUFFERINGSIZE:-100}"
+      # Access log field toggles
+      - "--accesslog.fields.defaultmode=${ACCESSLOG_FIELDS_DEFAULTMODE:-keep}"
+      - "--accesslog.fields.names.ClientUsername=${ACCESSLOG_FIELDS_NAMES_CLIENTUSERNAME:-keep}"
+      - "--accesslog.fields.headers.defaultmode=${ACCESSLOG_FIELDS_HEADERS_DEFAULTMODE:-keep}"
+      - "--accesslog.fields.headers.names.User-Agent=${ACCESSLOG_FIELDS_HEADERS_NAMES_USER_AGENT:-keep}"
+      - "--accesslog.fields.headers.names.Authorization=${ACCESSLOG_FIELDS_HEADERS_NAMES_AUTHORIZATION:-keep}"
+      - "--accesslog.fields.headers.names.Content-Type=${ACCESSLOG_FIELDS_HEADERS_NAMES_CONTENT_TYPE:-keep}"
+      # SSL certificates resolvers
+      - "--certificatesresolvers.letsencrypt.acme.caserver=${ACME_CA_SERVER}"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
+      - "--certificatesResolvers.letsencrypt.acme.tlsChallenge=${ACME_TLS_CHALLENGE}"
+      - "--certificatesResolvers.letsencrypt.acme.dnsChallenge=${ACME_DNS_CHALLENGE}"
+      - "--certificatesResolvers.letsencrypt.acme.dnsChallenge.provider=${ACME_DNS_PROVIDER}"
+      - "--certificatesResolvers.letsencrypt.acme.dnsChallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
     environment:
       - ${ACME_DNS_PROVIDER_ENV_FILE}=/provider.key
     volumes:
@@ -48,7 +52,6 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "${PROXIMATIC_YML_PATH:-./data/yml}:/proximatic/yml:ro"
       - "${LOG_PATH:-./data/logs}:/logs"
-
     networks:
       - proxy
       - default
