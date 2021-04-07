@@ -43,7 +43,7 @@ docker exec -it proximatic_api proximatic provider-create example https://www.ex
 
 Now type `docker exec -it proximatic_api proximatic provider-list` and you should see:
 
-```bash
+```markdown
 | type     | id      | endpoint                  | server                  |
 |----------|---------|---------------------------|-------------------------|
 | provider | example | example.`PROXIMATIC_FQDN` | https://www.example.org |
