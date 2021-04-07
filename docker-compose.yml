@@ -70,6 +70,8 @@ services:
       - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
       - "traefik.http.routers.traefik-secure.tls=true"
       - "traefik.http.routers.traefik-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].main=${PROXIMATIC_FQDN}"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.${PROXIMATIC_FQDN}"
       - "traefik.http.routers.traefik-secure.service=api@internal"
   api:
     build: ./
@@ -85,7 +87,7 @@ services:
       - "traefik.http.routers.proximatic-api.entrypoints=web-secure"
       - "traefik.http.routers.proximatic-api.rule=Host(`api.${PROXIMATIC_FQDN}`)"
       - "traefik.http.routers.proximatic-api.tls=true"
-      - "traefik.http.routers.proximatic-api.tls.certresolver=letsencrypt"
+      # - "traefik.http.routers.proximatic-api.tls.certresolver=letsencrypt"
       - "traefik.http.middlewares.proximatic-api-auth.basicauth.users=${PROXIMATIC_ADMIN_USER}"
       - "traefik.http.routers.proximatic-api.middlewares=proximatic-api-auth"
 
